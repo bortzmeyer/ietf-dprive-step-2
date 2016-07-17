@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY rfc6797 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6797.xml">
+<!ENTITY rfc7626 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
+<!ENTITY rfc7858 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7858.xml">
+<!ENTITY I-D.ietf-dprive-dtls-and-tls-profiles SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-dtls-and-tls-profiles.xml">
+]>
+
+<rfc docName="draft-bortzmeyer-dprive-step-2-00-BETA"
+     category="std" ipr="trust200902">
+<?rfc toc="yes"?>
+<?rfc strict="yes"?>
+<front>
+<title abbrev="DPRIVE step 2">Next step for DPRIVE: resolver-to-auth link</title>
+<author fullname="Stephane Bortzmeyer" initials="S." surname="Bortzmeyer">
+<organization>AFNIC</organization>
+<address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
+</author>
+<date month="TODO" year="TODO"/>
+<abstract>
+  <t>This document examines the possible future work for the DPRIVE
+  (DNS privacy) working group, specially in securing the
+  resolver-to-authoritative name server link.</t>
+  <t>It is not intended to be published as a RFC.</t>
+<t>REMOVE BEFORE PUBLICATION: this document should be discussed in the
+IETF DPRIVE group, through its mailing list. The
+source of the document, as well as a list of open issues, is currently
+kept <eref
+target="https://github.com/bortzmeyer/ietf-dprive-step-2">at Github</eref>.</t>
+</abstract>
+</front>
+
+<middle>
+  <section anchor="intro" title="Introduction and background">
+    <t>To improve the privacy of the DNS user (<xref
+    target="RFC7626"/>), the standard solution is to encrypt the
+    requests with TLS (<xref target="RFC7858"/>). Just encrypting,
+    without authenticating the remote server, leaves the user's
+    privacy vulnerable to active man-in-the-middle attacks. <xref
+    target="RFC7858"/> and <xref
+target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
+    authenticate the DNS resolver, in the stub-to-resolver link. We
+    have currently no standard way to authenticate the authoritative
+    name server, in the resolver-to-auth link.</t>
+    <t>The two cases are quite different: a stub resolver has only a
+    few resolvers, and there is typically a pre-existing
+    relationship. But a resolver speaks to many authoritative name
+    servers, without any prior relationship. This means that, for
+    instance, having a static key for the resolver makes sense while
+    it would be clearly unrealistic for the authoritative server.</t>
+    <t>TODO DPRIVE charter's limits</t>
+  </section>
+
+  <section title="Possible solutions">
+    <t>Here is a comprehensive list of the possible solutions to the
+    problem of authenticating the authoritative DNS server. TODO subsections?</t>
+    <t>We could encode the key in the authoritative server name (as in
+    DNScurve TODO ref).</t>
+    <figure><artwork>
+% dig +short NS yp.to
+uz5dz39x8xk8wyq3dzn7vpt670qmvzx0zd9zg4ldwldkv6kx9ft090.ns.yp.to.
+uz5hjgptn63q5qlch6xlrw63tf6vhvvu6mjwn0s31buw1lhmlk14kd.ns.yp.to.
+uz5uu2c7j228ujjccp3ustnfmr4pgcg5ylvt16kmd0qzw7bbjgd5xq.ns.yp.to.     
+    </artwork></figure>
+    <t>Transmitting the key would therefore be a
+    by-product of delegation. TODO limits in number of name servers, in
+    name's length for RSA.</t>
+    <t>We could publish keys in the DNS, secured with DNSSEC (as in
+    DANE TODO ref). This 
+  raises an interesting bootstrap problem: we need to have an
+  "unsecure" mode to retrieve the initial key material.</t>
+   <t>We could simply not check the keys at all, accepting anything.</t>
+   <t>We could use the X.509 security model TODO ref (RFC
+   PKIX?). Certificates for authoritative name servers, signed by
+regular CAs, with the IP address of the server in the Subject
+Alternative Name. (TODO how many CAs accept that?)</t>
+   <t>all these solutions can be improved by solutions like automatic key
+pinning (<xref target="RFC6797"/>).
+</t>
+  </section>
+    
+<section title="IANA Considerations">
+<t>TODO</t>
+</section>
+
+<section anchor="security" title="Security Considerations">
+<t>TODO</t>
+</section>
+
+<section title="Acknowledgments">
+<t>TODO</t>
+</section>
+
+</middle>
+
+<back>
+
+<references title='Normative References'>
+  &rfc7858;
+  &I-D.ietf-dprive-dtls-and-tls-profiles;
+</references>
+
+<references title='Informative References'>
+  &rfc6797;
+  &rfc7626;
+</references> 
+
+</back>
+
+</rfc>
+
+
+
