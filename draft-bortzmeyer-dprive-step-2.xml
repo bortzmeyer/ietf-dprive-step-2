@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY rfc5280 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml">
+<!ENTITY rfc6698 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6698.xml">
 <!ENTITY rfc6797 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6797.xml">
 <!ENTITY rfc7626 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
 <!ENTITY rfc7858 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7858.xml">
 <!ENTITY I-D.ietf-dprive-dtls-and-tls-profiles SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-dtls-and-tls-profiles.xml">
+<!ENTITY I-D.dempsky-dnscurve SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.dempsky-dnscurve.xml">
 ]>
 
-<rfc docName="draft-bortzmeyer-dprive-step-2-00-BETA"
+<rfc docName="draft-bortzmeyer-dprive-step-2-00"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -18,11 +24,12 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="TODO" year="TODO"/>
+<date month="July" year="2016"/>
+<workgroup>DNS Privacy (dprive) Working Group</workgroup>
 <abstract>
   <t>This document examines the possible future work for the DPRIVE
   (DNS privacy) working group, specially in securing the
-  resolver-to-authoritative name server link.</t>
+  resolver-to-authoritative name server link with TLS under DNS.</t>
   <t>It is not intended to be published as a RFC.</t>
 <t>REMOVE BEFORE PUBLICATION: this document should be discussed in the
 IETF DPRIVE group, through its mailing list. The
@@ -50,47 +57,123 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
     servers, without any prior relationship. This means that, for
     instance, having a static key for the resolver makes sense while
     it would be clearly unrealistic for the authoritative server.</t>
-    <t>TODO DPRIVE charter's limits</t>
+    <t>Another difference is that resolvers are typically known by IP
+    address (obtained by DHCP or manual configuration) while
+    authoritative name servers are known by name (obtained from zone
+    delegation). This makes things easier for techniques similar to
+    DANE: the manager of the ns1.example.net name server can always
+    add a TLSA record under example.net while she may have problems
+    modifying the zone under in-addr.arpa or ip6.arpa.</t>
+    <t>The original charter of the DPRIVE working group<!--
+    https://datatracker.ietf.org/wg/dprive/charter/ -->, in force at
+    the time of this draft, says "The primary focus of this Working
+    Group is to develop mechanisms that provide confidentiality
+    between DNS Clients and Iterative Resolvers" and adds "but it may
+    also later consider mechanisms that provide confidentiality
+    between Iterative Resolvers and Authoritative Servers". This
+    document is here for this second step, "between Iterative
+    Resolvers and Authoritative Servers". It will probably require a
+    rechartering of the group.</t>
   </section>
 
-  <section title="Possible solutions">
-    <t>Here is a comprehensive list of the possible solutions to the
-    problem of authenticating the authoritative DNS server. TODO subsections?</t>
+  <section anchor="solutions" title="Possible solutions">
+    <t>We can express the problem this way: if we want to use
+    TLS-over-DNS to secure the link between the resolver and the
+    authoritative server, it would be important to have a standard way
+    to authenticate the authoritative server. Basically, the client
+    will get the public key of the server in the TLS session, how will
+    it know that this key is the right one?</t>
+    <t>Here is a comprehensive list of the four possible solutions to this
+    problem. First, the two where the key (or a hash of it)
+    is available somewhere else than in the TLS session.</t>
+    <section title="Encode key in name">
     <t>We could encode the key in the authoritative server name (as in
-    DNScurve TODO ref).</t>
+    DNScurve <xref target="dnscurve"/> <xref
+    target="I-D.dempsky-dnscurve"/>). Here is an example of a domain
+    using DNScurve: the names of the authoritative name servers are a
+    Base-32 encoded form of the server's Curve25519 public key.</t>
     <figure><artwork>
 % dig +short NS yp.to
 uz5dz39x8xk8wyq3dzn7vpt670qmvzx0zd9zg4ldwldkv6kx9ft090.ns.yp.to.
 uz5hjgptn63q5qlch6xlrw63tf6vhvvu6mjwn0s31buw1lhmlk14kd.ns.yp.to.
 uz5uu2c7j228ujjccp3ustnfmr4pgcg5ylvt16kmd0qzw7bbjgd5xq.ns.yp.to.     
     </artwork></figure>
-    <t>Transmitting the key would therefore be a
-    by-product of delegation. TODO limits in number of name servers, in
-    name's length for RSA.</t>
+    <t>Securely transmitting the key would therefore be a
+    by-product of delegation. Among the limits of this solution, the
+    length of these names limit the number of possible name servers,
+    if we want to keep the delegation short. 
+    Also, it requires a cryptographic algorithm where keys are short
+    (which means no RSA).</t>
+    </section>
+    <section title="Key in DNS">
     <t>We could publish keys in the DNS, secured with DNSSEC (as in
-    DANE TODO ref). This 
+    DANE <xref target="RFC6698"/>). This 
   raises an interesting bootstrap problem: we need to have an
-  "unsecure" mode to retrieve the initial key material.</t>
-   <t>We could simply not check the keys at all, accepting anything.</t>
-   <t>We could use the X.509 security model TODO ref (RFC
-   PKIX?). Certificates for authoritative name servers, signed by
-regular CAs, with the IP address of the server in the Subject
-Alternative Name. (TODO how many CAs accept that?)</t>
-   <t>all these solutions can be improved by solutions like automatic key
-pinning (<xref target="RFC6797"/>).
-</t>
+    "unsecure" mode to retrieve the initial key material. A possible
+    algorithm is:
+    <list style="empty">
+<t>(0)The resolver remembers the keys of the authoritative name
+servers (in the same way it remembers the lowest RTT among a NS
+RRset),</t>
+<t>(1)When the resolver needs to talk to a server (say
+ns1.example.net) for which it does
+not know the key, it does a TLSA request for
+_953._tcp.ns1.example.net,</t>
+<t>(2)If the resolution of this request requires to talk to the very
+server we search the key for, the resolver connects to this server with TLS to port
+953, does not authenticate, and sends the query. This step offers no authentication.</t>
+    </list>
+    The real algorithm will need to be more complicated since there
+    are several servers per zone. A resolver may use the knowledge of
+    TLS authentication it has to choose an authoritative name server
+    among a NS RRset.
+    </t>
+    </section>
+    <section title="PKIX">
+    <t>We could use the X.509 security model <xref
+    target="RFC5280"/>). The certificates for authoritative name
+    servers would be signed by
+regular CAs, with the name of the server in the Subject
+    Alternative Name.</t>
+    <t>One of the problems is that resolvers will probably have
+    different sets of trusted CA so an authoritative name server will
+    not know in advance what percentage of the resolvers may
+    authenticate it.</t>
+    </section>
+        <section title="Lax security">
+   <t>Finally, we could simply not check the keys at all, accepting
+   anything. This would break privacy promises, when there is an
+   active attacker, able to pose as the authoritative name server. But
+   it is still better, privacy-wise, than the current situation where
+   DNS requests are sent in clear text.</t>
+    </section>
+  </section>
+
+  <section title="Miscellaneous">
+    <t>A resolver may use a combination of these solutions. For
+    instance, trying PKIX authentication (it does not require an extra
+    lookup, except may be OCSP), if it fails, search a TLSA
+    record, if there is none, depending on the resolver's policy, accept anyway.</t>
+       <t>All these solutions can be improved by things like automatic key
+       pinning (<xref target="RFC6797"/>).</t>
+       <t>An authoritative name server cannot know if the resolver
+       authentified it, and how. In the future, it may be interesting
+       to have a EDNS option to signal a successful authentication, or
+       a failure, but this is out of scope currently.</t>
   </section>
     
 <section title="IANA Considerations">
-<t>TODO</t>
+<t>There is currently nothing to do for IANA. The future chosen
+solution may require some IANA action, such as a registry.</t>
 </section>
 
 <section anchor="security" title="Security Considerations">
-<t>TODO</t>
+<t>For the time being, refer to each subsection under <xref
+target="solutions"/> to have an analysis of its security.</t>
 </section>
 
 <section title="Acknowledgments">
-<t>TODO</t>
+<t>Nobody yet :-)</t>
 </section>
 
 </middle>
@@ -103,8 +186,22 @@ pinning (<xref target="RFC6797"/>).
 </references>
 
 <references title='Informative References'>
+  &rfc5280;
+  &rfc6698;
   &rfc6797;
   &rfc7626;
+    &I-D.dempsky-dnscurve;
+
+  <reference anchor="dnscurve"
+	   target="http://dnscurve.org/">
+  <front>
+    <title>DNSCurve: Usable security for DNS</title>
+    <author fullname="Dan Bernstein" initials="D."
+	    surname="Bernstein"/>
+    <date month="June" year="2009"/>
+  </front>
+</reference>
+
 </references> 
 
 </back>
