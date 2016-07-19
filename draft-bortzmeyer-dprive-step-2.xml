@@ -6,15 +6,19 @@
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6698.xml">
 <!ENTITY rfc6797 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6797.xml">
-<!ENTITY rfc7626 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
+<!ENTITY rfc7250 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7250.xml">
+<!ENTITY rfc7626 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
 <!ENTITY rfc7858 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7858.xml">
 <!ENTITY I-D.ietf-dprive-dtls-and-tls-profiles SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-dtls-and-tls-profiles.xml">
 <!ENTITY I-D.dempsky-dnscurve SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.dempsky-dnscurve.xml">
+<!ENTITY I-D.ietf-tls-dnssec-chain-extension SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-dnssec-chain-extension.xml">
 ]>
 
-<rfc docName="draft-bortzmeyer-dprive-step-2-00"
+<rfc docName="draft-bortzmeyer-dprive-step-2-01-BETA"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -108,9 +112,11 @@ uz5uu2c7j228ujjccp3ustnfmr4pgcg5ylvt16kmd0qzw7bbjgd5xq.ns.yp.to.
     <section title="Key in DNS">
     <t>We could publish keys in the DNS, secured with DNSSEC (as in
     DANE <xref target="RFC6698"/>). This 
-  raises an interesting bootstrap problem: we need to have an
-    "unsecure" mode to retrieve the initial key material. A possible
-    algorithm is:
+  raises an interesting bootstrap problem: we need the key to 
+  get information privately with the DNS but we need the DNS to do so.
+  A possible solution is to have an
+    "unsecure" mode to retrieve the initial key material. The
+    algorithm could be:
     <list style="empty">
 <t>(0)The resolver remembers the keys of the authoritative name
 servers (in the same way it remembers the lowest RTT among a NS
@@ -128,6 +134,9 @@ server we search the key for, the resolver connects to this server with TLS to p
     TLS authentication it has to choose an authoritative name server
     among a NS RRset.
     </t>
+    <t>Another solution is for the authoritative name server to use
+    <xref target="I-D.ietf-tls-dnssec-chain-extension"/> to send all
+    the necessary DNSSEC records over TLS.</t>
     </section>
     <section title="PKIX">
     <t>We could use the X.509 security model <xref
@@ -139,6 +148,8 @@ regular CAs, with the name of the server in the Subject
     different sets of trusted CA so an authoritative name server will
     not know in advance what percentage of the resolvers may
     authenticate it.</t>
+    <t>Of course, this technique would not work if the server used raw
+    public keys (<xref target="RFC7250"/>.</t>
     </section>
         <section title="Lax security">
    <t>Finally, we could simply not check the keys at all, accepting
@@ -189,8 +200,10 @@ target="solutions"/> to have an analysis of its security.</t>
   &rfc5280;
   &rfc6698;
   &rfc6797;
+  &rfc7250;
   &rfc7626;
-    &I-D.dempsky-dnscurve;
+  &I-D.dempsky-dnscurve;
+  &I-D.ietf-tls-dnssec-chain-extension;
 
   <reference anchor="dnscurve"
 	   target="http://dnscurve.org/">
