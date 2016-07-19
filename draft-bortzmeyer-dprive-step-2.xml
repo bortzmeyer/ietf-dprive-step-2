@@ -118,10 +118,10 @@ RRset),</t>
 <t>(1)When the resolver needs to talk to a server (say
 ns1.example.net) for which it does
 not know the key, it does a TLSA request for
-_953._tcp.ns1.example.net,</t>
+_853._tcp.ns1.example.net,</t>
 <t>(2)If the resolution of this request requires to talk to the very
 server we search the key for, the resolver connects to this server with TLS to port
-953, does not authenticate, and sends the query. This step offers no authentication.</t>
+853, does not authenticate, and sends the query. This step offers no authentication.</t>
     </list>
     The real algorithm will need to be more complicated since there
     are several servers per zone. A resolver may use the knowledge of
