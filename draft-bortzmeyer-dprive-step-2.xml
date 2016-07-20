@@ -18,7 +18,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-dnssec-chain-extension.xml">
 ]>
 
-<rfc docName="draft-bortzmeyer-dprive-step-2-01-BETA"
+<rfc docName="draft-bortzmeyer-dprive-step-2-01"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
