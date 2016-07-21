@@ -129,6 +129,8 @@ _853._tcp.ns1.example.net,</t>
 server we search the key for, the resolver connects to this server with TLS to port
 853, does not authenticate, and sends the query. This step offers no authentication.</t>
     </list>
+    (See also <xref
+target="I-D.ietf-dprive-dtls-and-tls-profiles"/>, section 9.2.)
     The real algorithm will need to be more complicated since there
     are several servers per zone. A resolver may use the knowledge of
     TLS authentication it has to choose an authoritative name server
