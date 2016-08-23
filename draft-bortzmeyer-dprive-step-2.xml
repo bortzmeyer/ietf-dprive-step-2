@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY rfc3972 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.3972.xml">
 <!ENTITY rfc5280 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml">
 <!ENTITY rfc6698 SYSTEM
@@ -18,7 +20,7 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-dnssec-chain-extension.xml">
 ]>
 
-<rfc docName="draft-bortzmeyer-dprive-step-2-01"
+<rfc docName="draft-bortzmeyer-dprive-step-2-02"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -28,7 +30,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="July" year="2016"/>
+<date month="August" year="2016"/>
 <workgroup>DNS Privacy (dprive) Working Group</workgroup>
 <abstract>
   <t>This document examines the possible future work for the DPRIVE
@@ -68,6 +70,9 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
     DANE: the manager of the ns1.example.net name server can always
     add a TLSA record under example.net while she may have problems
     modifying the zone under in-addr.arpa or ip6.arpa.</t>
+    <t>(On the other hand, the resolver knows also the IP address of
+    the authoritative server, so it can authenticate based on this,
+    the fourth and fifth solutions in <xref target="solutions"/>.)</t>
     <t>The original charter of the DPRIVE working group<!--
     https://datatracker.ietf.org/wg/dprive/charter/ -->, in force at
     the time of this draft, says "The primary focus of this Working
@@ -87,7 +92,7 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
     to authenticate the authoritative server. Basically, the client
     will get the public key of the server in the TLS session, how will
     it know that this key is the right one?</t>
-    <t>Here is a comprehensive list of the four possible solutions to this
+    <t>Here is a comprehensive list of the six possible solutions to this
     problem. First, the two where the key (or a hash of it)
     is available somewhere else than in the TLS session.</t>
     <section title="Encode key in name">
@@ -127,7 +132,8 @@ not know the key, it does a TLSA request for
 _853._tcp.ns1.example.net,</t>
 <t>(2)If the resolution of this request requires to talk to the very
 server we search the key for, the resolver connects to this server with TLS to port
-853, does not authenticate, and sends the query. This step offers no authentication.</t>
+853, does not authenticate, and sends the query. This step offers no
+authentication ("opportunistic"?).</t>
     </list>
     (See also <xref
 target="I-D.ietf-dprive-dtls-and-tls-profiles"/>, section 9.2.)
@@ -145,13 +151,37 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/>, section 9.2.)
     target="RFC5280"/>). The certificates for authoritative name
     servers would be signed by
 regular CAs, with the name of the server in the Subject
-    Alternative Name.</t>
+    Alternative Name (or may be its IP address in this field, but, as
+    far as the author knows, few CAs issue certificats for IP addresses).</t>
     <t>One of the problems is that resolvers will probably have
     different sets of trusted CA so an authoritative name server will
     not know in advance what percentage of the resolvers may
     authenticate it.</t>
     <t>Of course, this technique would not work if the server used raw
     public keys (<xref target="RFC7250"/>.</t>
+    </section>
+    <section title="&quot;reverse&quot; DNS">
+      <t>The resolver could start from the IP address of the
+      authoritative name server, and get a key from the name in the in-addr.arpa
+      or ip6.arpa zone. For instance, if the authoritative server will
+      be queried at 2001:db8:42:cafe::1:53, the request will be done
+      for
+      3.5.0.0.1.0.0.0.0.0.0.0.0.0.0.0.e.f.a.c.2.4.0.0.8.b.d.0.1.0.0.2.ip6.arpa.</t>
+      <t>There is also a boostrapping problem here too, but since there
+     are only five RIR that manage the reverse DNS some sort of hard-coded or
+      semi-hard-coded setup might be possible.</t>
+      <t>Unfortunately the operators for the space are often different
+      from the operators of the DNS, so this is often not a reasonable
+      solution administratively.</t>
+    </section>
+    <section title="CGA">
+      <t>Another solution starting from the IP address of the
+      authoritative name server would be to use CGA (<xref
+      target="RFC3972"/>). The IPv6 address encodes the public key in the lower 64-bits of
+     the address. So we could use the IPv6 address as the public key of the
+     servers.</t>
+     <t>This only works for IPv6, doesn't have (much) cryptographic
+     agility, and raises serious layering violation issues.</t>
     </section>
         <section title="Lax security">
    <t>Finally, we could simply not check the keys at all, accepting
@@ -166,7 +196,9 @@ regular CAs, with the name of the server in the Subject
     <t>A resolver may use a combination of these solutions. For
     instance, trying PKIX authentication (it does not require an extra
     lookup, except may be OCSP), if it fails, search a TLSA
-    record, if there is none, depending on the resolver's policy, accept anyway.</t>
+    record, if there is none, depending on the resolver's policy,
+    accept anyway. Clearly, trying all six solutions is unrealistic so
+    some guidance on how to combine them will be necessary.</t>
        <t>All these solutions can be improved by things like automatic key
        pinning (<xref target="RFC6797"/>).</t>
        <t>An authoritative name server cannot know if the resolver
@@ -186,7 +218,7 @@ target="solutions"/> to have an analysis of its security.</t>
 </section>
 
 <section title="Acknowledgments">
-<t>Nobody yet :-)</t>
+<t>Shane Kerr for the ideas on authentication by IP address.</t>
 </section>
 
 </middle>
@@ -199,6 +231,7 @@ target="solutions"/> to have an analysis of its security.</t>
 </references>
 
 <references title='Informative References'>
+  &rfc3972;
   &rfc5280;
   &rfc6698;
   &rfc6797;
