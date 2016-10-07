@@ -1,0 +1,68 @@
+\documentclass[ignorenonframetext]{beamer}
+\usetheme{Madrid}
+\usepackage[utf8x]{inputenc}
+\usepackage{bortzmeyer-utils}
+
+\title{The next step for DPRIVE}
+\author{Stéphane Bortzmeyer - AFNIC}
+\date{IETF 97 - Seoul}
+
+\begin{document}
+
+\begin{frame}
+\maketitle  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Current state}
+  \begin{itemize}
+  \item<2->Charter said ``primary focus [\ldots] to develop mechanisms that
+    provide confidentiality between DNS Clients and Iterative Resolvers''
+   \item<3->RFC 7858 and
+     \path{draft-ietf-dprive-dtls-and-tls-profiles} provides
+     encryption and stub$\longrightarrow$resolver authentication
+  \item<4->Charter also says ``may also later consider mechanisms that provide confidentiality
+between Iterative Resolvers and Authoritative Server''
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Proposal}
+  \begin{itemize}
+  \item<2->Do not reinvent the wheel: reuse DNS-over-(D)TLS
+  \item<3->This leaves the issue of \emph{authentication}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Big difference}
+  \begin{itemize}
+    \item<2->stub$\longrightarrow$resolver: few servers, static config
+      such as key pinning is OK
+    \item<3->resolver$\longrightarrow$authoritative: many servers,
+      need something more dynamic
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Possible techniques of authentication}
+             [Should be all in \path{draft-bortzmeyer-dprive-step-2}]
+   \begin{itemize}
+   \item<2->Encode key in name (DNScrypt-style)
+   \item<3->Regular PKIK validation based on DNSname
+   \item<4->Key in DNS (DANE)
+   \item<5->\ldots  
+   \end{itemize}            
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tasks}
+  \begin{itemize}
+  \item<2->Decide on one (or several) solutions in
+    \path{draft-bortzmeyer-dprive-step-2}
+  \item<3->Write an I-D
+  \item<4->Do we need to update the charter?  
+  \end{itemize}
+\end{frame}
+
+\end{document}
