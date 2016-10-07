@@ -49,10 +49,13 @@ between Iterative Resolvers and Authoritative Server''
              [Should be all in \path{draft-bortzmeyer-dprive-step-2}]
    \begin{itemize}
    \item<2->Encode key in name (DNScrypt-style)
-   \item<3->Regular PKIK validation based on DNSname
+   \item<3->Regular PKIX validation based on DNSname
    \item<4->Key in DNS (DANE)
    \item<5->\ldots  
-   \end{itemize}            
+   \end{itemize}
+   \only<6->{Difficult balance between too few and too many
+     choices. What to do if client wants DANE and server only has a
+     PKIX cert?}
 \end{frame}
 
 \begin{frame}
