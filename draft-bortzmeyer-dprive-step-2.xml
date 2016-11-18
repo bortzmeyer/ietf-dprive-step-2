@@ -78,6 +78,8 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
     <t>(On the other hand, the resolver knows also the IP address of
     the authoritative server, so it can authenticate based on this,
     the fourth and fifth solutions in <xref target="solutions"/>.)</t>
+    <t>TODO third difference, more difficult to report auth. problems
+    to the end-user.</t>
     <t>The original charter of the DPRIVE working group<!--
     https://datatracker.ietf.org/wg/dprive/charter/ -->, in force at
     the time of this draft, says "The primary focus of this Working
