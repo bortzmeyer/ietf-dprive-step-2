@@ -4,23 +4,32 @@
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3972.xml">
 <!ENTITY rfc5280 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml">
+<!ENTITY rfc6555 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6555.xml">
 <!ENTITY rfc6698 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6698.xml">
 <!ENTITY rfc6797 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6797.xml">
-<!ENTITY rfc7250 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7250.xml">
+<!ENTITY rfc7250 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.7250.xml">
+<!ENTITY rfc7413 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7413.xml">
 <!ENTITY rfc7626 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
 <!ENTITY rfc7858 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7858.xml">
 <!ENTITY I-D.ietf-dprive-dtls-and-tls-profiles SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-dtls-and-tls-profiles.xml">
+<!ENTITY I-D.ietf-dprive-dnsodtls SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-dnsodtls.xml">
 <!ENTITY I-D.dempsky-dnscurve SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.dempsky-dnscurve.xml">
+<!ENTITY I-D.ietf-tls-tls13 SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-tls13.xml">
+<!ENTITY I-D.krecicki-dprive-dnsenc SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.krecicki-dprive-dnsenc.xml">
 <!ENTITY I-D.ietf-tls-dnssec-chain-extension SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-dnssec-chain-extension.xml">
 ]>
-
-<rfc docName="draft-bortzmeyer-dprive-step-2-03-BETA"
+<rfc docName="draft-bortzmeyer-dprive-step-2-03"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -30,7 +39,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="TODO" year="TODO"/>
+<date month="November" year="2016"/>
 <workgroup>DNS Privacy (dprive) Working Group</workgroup>
 <abstract>
   <t>This document examines the possible future work for the DPRIVE
@@ -78,8 +87,9 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
     <t>(On the other hand, the resolver knows also the IP address of
     the authoritative server, so it can authenticate based on this,
     the fourth and fifth solutions in <xref target="solutions"/>.)</t>
-    <t>TODO third difference, more difficult to report auth. problems
-    to the end-user.</t>
+    <t>A third difference between the stub-to-resolver and
+    resolver-to-auth links is that, in the second case, it is more difficult to report authentication problems
+    to the end-user. (For better or for worse, the DNS is not end-to-end.)</t>
     <t>The original charter of the DPRIVE working group<!--
     https://datatracker.ietf.org/wg/dprive/charter/ -->, in force at
     the time of this draft, says "The primary focus of this Working
@@ -92,6 +102,28 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
     rechartering of the group.</t>
   </section>
 
+  <section anchor="tls" title="TLS or not TLS">
+    <t>At first glance, the obvious protocol choice for encrypting the
+    resolver-to-auth link is to use DNS over TLS or DTLS (<xref
+    target="RFC7858"/>, <xref target="I-D.ietf-dprive-dnsodtls"/>):
+    <list>
+      <t>Already standardised</t>
+      <t>Relies on a well-know security protocol (and inventing a new
+      security protocol is quite dangerous)</t>
+    </list>
+    On the other hand, the DNS has some special properties. While a
+    stub resolver talks to only a few few resolvers (and therefore can
+    afford a few TCP+TLS connections), a resolver may hesitate in
+    front of the task of managing hundreds of connections to remote
+    authoritative servers. Some may think that a specially-designed
+    protocol like <xref target="I-D.krecicki-dprive-dnsenc"/> is
+    better.</t>
+    <t>If we choose TLS, we may require a minimum version of 1.3. TLS
+    1.3 <xref target="I-D.ietf-tls-tls13"/> will probably be standardised before this document, and,
+    specially combined with TCP Fast Open <xref target="RFC7413"/>, it promises a minimum
+    latency when contacting a new server.</t>
+  </section>
+  
   <section anchor="solutions" title="Possible solutions">
     <t>We can express the problem this way: if we want to use
     TLS-over-DNS to secure the link between the resolver and the
@@ -120,6 +152,10 @@ uz5uu2c7j228ujjccp3ustnfmr4pgcg5ylvt16kmd0qzw7bbjgd5xq.ns.yp.to.
     if we want to keep the delegation short. 
     Also, it requires a cryptographic algorithm where keys are short
     (which means no RSA).</t>
+    <t>If we want to add cryptographic agility to this solution, we
+    will need a few bytes before the key itself, to indicate, for
+    instance, the algorithm it uses. It will reduce the possible key size
+    even more.</t>
     </section>
     <section title="Key in DNS">
     <t>We could publish keys in the DNS, secured with DNSSEC (as in
@@ -206,12 +242,23 @@ regular CAs, with the name of the server in the Subject
     record, if there is none, depending on the resolver's policy,
     accept anyway. Clearly, trying all six solutions is unrealistic so
     some guidance on how to combine them will be necessary.</t>
+    <t>Trying the various solutions in sequence may seriously increase
+    the latency, specially if there are timeouts involved. Using
+    parallel attemps ("happy eyeballs", <xref target="RFC6555"/>) seem
+    therefore crucial.</t>
        <t>All these solutions can be improved by things like automatic key
        pinning (<xref target="RFC6797"/>).</t>
        <t>An authoritative name server cannot know if the resolver
        authentified it, and how. In the future, it may be interesting
        to have a EDNS option to signal a successful authentication, or
        a failure, but this is out of scope currently.</t>
+       <t>If it is a concern that the same authoritative name servers
+       are used for ordinary DNS and for encrypted DNS, there are
+       several solutions. We may use front-end systems dispatching
+       requests to port 53 and 853 to different servers. Or we may
+       introduce a new delegation RR type, PNS (for Privacy Name
+       Server), located only in the child zone (to avoid depending on
+       a change of the provisioning software in the parent).</t>
   </section>
     
 <section title="IANA Considerations">
@@ -222,6 +269,9 @@ solution may require some IANA action, such as a registry.</t>
 <section anchor="security" title="Security Considerations">
 <t>For the time being, refer to each subsection under <xref
 target="solutions"/> to have an analysis of its security.</t>
+<t>A general problem with all (or most?) encryption protocols will be
+the state to be kept in the server. It may make some denial-of-service
+attacks easier, of the protocol is not properly designed.</t>
 </section>
 
 <section title="Acknowledgments">
@@ -240,12 +290,17 @@ target="solutions"/> to have an analysis of its security.</t>
 <references title='Informative References'>
   &rfc3972;
   &rfc5280;
+  &rfc6555;
   &rfc6698;
   &rfc6797;
   &rfc7250;
+  &rfc7413;
   &rfc7626;
   &I-D.dempsky-dnscurve;
+  &I-D.krecicki-dprive-dnsenc;
+  &I-D.ietf-tls-tls13;
   &I-D.ietf-tls-dnssec-chain-extension;
+  &I-D.ietf-dprive-dnsodtls;
 
   <reference anchor="dnscurve"
 	   target="http://dnscurve.org/">
