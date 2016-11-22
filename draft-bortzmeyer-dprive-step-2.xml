@@ -29,7 +29,7 @@
 <!ENTITY I-D.ietf-tls-dnssec-chain-extension SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-dnssec-chain-extension.xml">
 ]>
-<rfc docName="draft-bortzmeyer-dprive-step-2-03"
+<rfc docName="draft-bortzmeyer-dprive-step-2-04-BETA"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -39,7 +39,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="November" year="2016"/>
+<date month="TODO" year="TODO"/>
 <workgroup>DNS Privacy (dprive) Working Group</workgroup>
 <abstract>
   <t>This document examines the possible future work for the DPRIVE
@@ -232,7 +232,12 @@ regular CAs, with the name of the server in the Subject
    active attacker, able to pose as the authoritative name server. But
    it is still better, privacy-wise, than the current situation where
    DNS requests are sent in clear text.</t>
-    </section>
+   <t>Note that some of these proposals to authenticate the server also
+   have the side-effect of signaling if the server is able and willing
+   to do encryption. This is the case with key in the name and of
+   course of DANE. In the other cases, the only way for a resolver to
+   know if a server is supposed to accept encryption is to try it.</t>
+	</section>
   </section>
 
   <section title="Miscellaneous">
