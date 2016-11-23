@@ -29,7 +29,7 @@
 <!ENTITY I-D.ietf-tls-dnssec-chain-extension SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-dnssec-chain-extension.xml">
 ]>
-<rfc docName="draft-bortzmeyer-dprive-step-2-04-BETA"
+<rfc docName="draft-bortzmeyer-dprive-step-2-04"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -39,7 +39,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="TODO" year="TODO"/>
+<date month="November" year="2016"/>
 <workgroup>DNS Privacy (dprive) Working Group</workgroup>
 <abstract>
   <t>This document examines the possible future work for the DPRIVE
