@@ -15,6 +15,8 @@
 <!ENTITY rfc7413 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7413.xml">
 <!ENTITY rfc7626 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
+<!ENTITY rfc7766 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.7766.xml">
 <!ENTITY rfc7858 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7858.xml">
 <!ENTITY I-D.ietf-dprive-dtls-and-tls-profiles SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-dtls-and-tls-profiles.xml">
@@ -22,14 +24,18 @@
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-dprive-dnsodtls.xml">
 <!ENTITY I-D.dempsky-dnscurve SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.dempsky-dnscurve.xml">
+<!ENTITY I-D.ietf-quic-transport SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-quic-transport.xml">
 <!ENTITY I-D.ietf-tls-tls13 SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-tls13.xml">
 <!ENTITY I-D.krecicki-dprive-dnsenc SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.krecicki-dprive-dnsenc.xml">
+<!ENTITY I-D.wijngaards-dnsop-confidentialdns SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.wijngaards-dnsop-confidentialdns.xml">
 <!ENTITY I-D.ietf-tls-dnssec-chain-extension SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-dnssec-chain-extension.xml">
 ]>
-<rfc docName="draft-bortzmeyer-dprive-step-2-04"
+<rfc docName="draft-bortzmeyer-dprive-step-2-05-BETA"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -115,13 +121,19 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
     stub resolver talks to only a few few resolvers (and therefore can
     afford a few TCP+TLS connections), a resolver may hesitate in
     front of the task of managing hundreds of connections to remote
-    authoritative servers. Some may think that a specially-designed
-    protocol like <xref target="I-D.krecicki-dprive-dnsenc"/> is
+    authoritative servers <xref target="tdns"/>. TCP Fast Open <xref target="RFC7413"/>, or persistent TCP
+    connections <xref target="RFC7766"/>, both requiring client-side state, will mean a lot of
+    state to maintain on the resolver. Some may think that a specially-designed
+    protocol like <xref target="I-D.krecicki-dprive-dnsenc"/> or <xref
+    target="I-D.wijngaards-dnsop-confidentialdns"/> is
     better.</t>
     <t>If we choose TLS, we may require a minimum version of 1.3. TLS
     1.3 <xref target="I-D.ietf-tls-tls13"/> will probably be standardised before this document, and,
     specially combined with TCP Fast Open <xref target="RFC7413"/>, it promises a minimum
     latency when contacting a new server.</t>
+    <t>One last possibility is to wait for QUIC <xref
+    target="I-D.ietf-quic-transport"/>, which can use TLS, but QUIC is
+    far from ready.</t>
   </section>
   
   <section anchor="solutions" title="Possible solutions">
@@ -301,8 +313,11 @@ attacks easier, of the protocol is not properly designed.</t>
   &rfc7250;
   &rfc7413;
   &rfc7626;
+  &rfc7766;
   &I-D.dempsky-dnscurve;
+  &I-D.ietf-quic-transport;
   &I-D.krecicki-dprive-dnsenc;
+  &I-D.wijngaards-dnsop-confidentialdns;
   &I-D.ietf-tls-tls13;
   &I-D.ietf-tls-dnssec-chain-extension;
   &I-D.ietf-dprive-dnsodtls;
@@ -314,6 +329,21 @@ attacks easier, of the protocol is not properly designed.</t>
     <author fullname="Dan Bernstein" initials="D."
 	    surname="Bernstein"/>
     <date month="June" year="2009"/>
+  </front>
+</reference>
+
+<reference anchor="tdns"
+	   target="http://www.isi.edu/~johnh/PAPERS/Zhu16b.pdf">
+  <front>
+    <title>T-DNS: Connection-Oriented DNS to Improve Privacy and
+    Security; USC/ISI Technical Report ISI-TR-706</title>
+    <author fullname="Liang Zhu"/>
+    <author fullname="Duane Wessels"/>
+    <author fullname="Zi Hu"/>
+    <author fullname="John Heidemann"/>
+    <author fullname="Allison Mankin"/>
+    <author fullname="Nikita Somaiya"/>
+  <date month="August" year="2014"/>
   </front>
 </reference>
 
