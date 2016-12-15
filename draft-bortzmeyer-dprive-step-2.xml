@@ -109,6 +109,10 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
   </section>
 
   <section anchor="tls" title="TLS or not TLS">
+    <t>There are several criteria to take into account before choosing
+    an encryption protocol:  client latency, server memory,
+   client memory, novelty vs. maturity of design, maturity of actual
+   code (libraries), support by other IETF groups, design complexity...</t>
     <t>At first glance, the obvious protocol choice for encrypting the
     resolver-to-auth link is to use DNS over TLS or DTLS (<xref
     target="RFC7858"/>, <xref target="I-D.ietf-dprive-dnsodtls"/>):
@@ -292,7 +296,8 @@ attacks easier, of the protocol is not properly designed.</t>
 </section>
 
 <section title="Acknowledgments">
-<t>Shane Kerr for the ideas on authentication by IP address.</t>
+<t>Shane Kerr for the ideas on authentication by IP address and John
+Heidemann for the list of criteria for evaluation.</t>
 </section>
 
 </middle>
