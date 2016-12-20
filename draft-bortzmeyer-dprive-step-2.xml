@@ -15,6 +15,8 @@
 <!ENTITY rfc7413 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7413.xml">
 <!ENTITY rfc7626 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7626.xml">
+<!ENTITY rfc7696 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.7696.xml">
 <!ENTITY rfc7766 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7766.xml">
 <!ENTITY rfc7858 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7858.xml">
@@ -35,7 +37,7 @@
 <!ENTITY I-D.ietf-tls-dnssec-chain-extension SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-dnssec-chain-extension.xml">
 ]>
-<rfc docName="draft-bortzmeyer-dprive-step-2-05-BETA"
+<rfc docName="draft-bortzmeyer-dprive-step-2-05"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -45,7 +47,7 @@
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="November" year="2016"/>
+<date month="December" year="2016"/>
 <workgroup>DNS Privacy (dprive) Working Group</workgroup>
 <abstract>
   <t>This document examines the possible future work for the DPRIVE
@@ -112,7 +114,8 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
     <t>There are several criteria to take into account before choosing
     an encryption protocol:  client latency, server memory,
    client memory, novelty vs. maturity of design, maturity of actual
-   code (libraries), support by other IETF groups, design complexity...</t>
+   code (libraries), support by other IETF groups, design complexity,
+    cryptographic protocol agility (<xref target="RFC7696"/>)...</t>
     <t>At first glance, the obvious protocol choice for encrypting the
     resolver-to-auth link is to use DNS over TLS or DTLS (<xref
     target="RFC7858"/>, <xref target="I-D.ietf-dprive-dnsodtls"/>):
@@ -137,7 +140,9 @@ target="I-D.ietf-dprive-dtls-and-tls-profiles"/> describe how to
     latency when contacting a new server.</t>
     <t>One last possibility is to wait for QUIC <xref
     target="I-D.ietf-quic-transport"/>, which can use TLS, but QUIC is
-    far from ready.</t>
+    far from ready. (One advantage of QUIC over DTLS is that it allows
+    for messages of arbitrary length. That means there is no need to
+    fall back to TCP when the message exceeds a certain size.)</t>
   </section>
   
   <section anchor="solutions" title="Possible solutions">
@@ -171,7 +176,8 @@ uz5uu2c7j228ujjccp3ustnfmr4pgcg5ylvt16kmd0qzw7bbjgd5xq.ns.yp.to.
     <t>If we want to add cryptographic agility to this solution, we
     will need a few bytes before the key itself, to indicate, for
     instance, the algorithm it uses. It will reduce the possible key size
-    even more.</t>
+    even more. (There was a suggestion to use the prefix "djb--" to
+    clearly indicate this name doubles as a key...)</t>
     </section>
     <section title="Key in DNS">
     <t>We could publish keys in the DNS, secured with DNSSEC (as in
@@ -318,6 +324,7 @@ Heidemann for the list of criteria for evaluation.</t>
   &rfc7250;
   &rfc7413;
   &rfc7626;
+  &rfc7696;
   &rfc7766;
   &I-D.dempsky-dnscurve;
   &I-D.ietf-quic-transport;
@@ -342,12 +349,12 @@ Heidemann for the list of criteria for evaluation.</t>
   <front>
     <title>T-DNS: Connection-Oriented DNS to Improve Privacy and
     Security; USC/ISI Technical Report ISI-TR-706</title>
-    <author fullname="Liang Zhu"/>
-    <author fullname="Duane Wessels"/>
-    <author fullname="Zi Hu"/>
-    <author fullname="John Heidemann"/>
-    <author fullname="Allison Mankin"/>
-    <author fullname="Nikita Somaiya"/>
+    <author initials="Z." surname="Liang" fullname="Liang Zhu"/>
+    <author initials="D." surname="Wessels" fullname="Duane Wessels"/>
+    <author initials="H." surname="Zi" fullname="Zi Hu"/>
+    <author initials="J." surname="Heidemann" fullname="John Heidemann"/>
+    <author initials="A." surname="Mankin" fullname="Allison Mankin"/>
+    <author initials="N." surname="Somaiya" fullname="Nikita Somaiya"/>
   <date month="August" year="2014"/>
   </front>
 </reference>
