@@ -23,7 +23,7 @@
 <!ENTITY I-D.bortzmeyer-dprive-step-2 SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.bortzmeyer-dprive-step-2.xml">
 ]>
-<rfc docName="draft-bortzmeyer-dprive-resolver-to-auth-00"
+<rfc docName="draft-bortzmeyer-dprive-resolver-to-auth-01-BETA"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -71,7 +71,7 @@ target="https://github.com/bortzmeyer/ietf-dprive-step-2">at Github</eref>.</t>
     <t>Instead, we rely on DANE (<xref target="RFC6698"/>). Authoritative name servers are known by name (obtained from zone
     delegation). The manager of the ns1.example.net name server adds
     a TLSA record under example.net. The client establishes the TLS
-    session, then authentify in the normal DANE way.</t>
+    session, then authenticate in the normal DANE way.</t>
     <t>The original charter of the DPRIVE working group<!--
     https://datatracker.ietf.org/wg/dprive/charter/ -->, in force at
     the time of this draft, says "The primary focus of this Working
@@ -92,7 +92,7 @@ target="https://github.com/bortzmeyer/ietf-dprive-step-2">at Github</eref>.</t>
     target="I-D.ietf-tls-dnssec-chain-extension"/>), it uses it. Otherwise,
     the resolver queries TLSA records (<xref
     target="RFC6698"/>) for this name
-    server and authentifies the key or certificate of the server this
+    server and authenticates the key or certificate of the server this
     way. If the name server is ns1.example.net, the TLSA record to
     query is _853._tcp.ns1.example.net.</t>
     <t>Note that the server MAY use raw
@@ -115,7 +115,7 @@ target="https://github.com/bortzmeyer/ietf-dprive-step-2">at Github</eref>.</t>
     MUST try other servers of the DNS zone. In opportunistic mode, the
     resolver MUST use the authoritative name server despite the
     failure. It MAY try other name servers of the zone before, in the
-    hope they will accept TLS and be authentified. To avoid a
+    hope they will accept TLS and be authenticated. To avoid a
     chicken-and-egg problem, the resolver, even in strict mode, MAY use insecure servers for
     the meta-queries (getting the TLSA records). More specifically:
     <list style="empty">
@@ -159,7 +159,7 @@ authentication.</t>
       important. A resolver working in opportunistic mode should try
       port 53 and 853 in parallel.</t>
       <t>An authoritative name server cannot know if the resolver
-      authentified it, and how. In the future, it may be interesting
+      authenticated it, and how. In the future, it may be interesting
       to have a EDNS option to signal a successful authentication, or
       a failure, but this is out of scope currently.</t>
       <t>If it is a concern that the same authoritative name servers
