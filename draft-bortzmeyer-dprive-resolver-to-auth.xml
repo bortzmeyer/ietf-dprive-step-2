@@ -34,7 +34,7 @@ authentication of the DNS resolver-to-authoritative communication</title>
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date month="January" year="2018"/>
+<date day="TODO" month="TODO" year="2018"/>
 <workgroup>DNS Privacy (dprive) Working Group</workgroup>
 <abstract>
   <t>This document proposes a mechanism for securing (privacy-wise)
@@ -53,7 +53,7 @@ target="https://github.com/bortzmeyer/ietf-dprive-step-2">at Github</eref>.</t>
     target="RFC7626"/>), the standard solution is to encrypt the
     requests with TLS (<xref target="RFC7858"/>). We use this
     DNS-over-TLS solution as well here, since it is standardized,
-    already implemented in many programs, and relies on a well-know
+    already implemented in many programs, and relies on a well-known
     security protocol (inventing a new security protocol is quite
     dangerous). But just encrypting, without authenticating the remote
     server, leaves the user's privacy vulnerable to active
@@ -116,7 +116,7 @@ target="https://github.com/bortzmeyer/ietf-dprive-step-2">at Github</eref>.</t>
     resolver MUST use the authoritative name server despite the
     failure. It MAY try other name servers of the zone before, in the
     hope they will accept TLS and be authenticated. To avoid a
-    chicken-and-egg problem, the resolver, even in strict mode, MAY use insecure servers for
+    chicken-and-egg problem, the resolver, even in strict mode, MAY use unsecure servers for
     the meta-queries (getting the TLSA records). More specifically:
     <list style="empty">
 <t>(0)The resolver remembers the keys of the authoritative name
@@ -126,8 +126,8 @@ RRset),</t>
 ns2.example.net) for which it does
 not know the key, it does a TLSA request for
 _853._tcp.ns2.example.net,</t>
-<t>(2)If the resolution of this request requires to talk to the very
-server we search the key for, the resolver connects to this server with TLS to port
+<t>(2)If the resolution of this request requires that we talk to the same server for which we’re searching for
+the TLSA record, the resolver connects to this server with TLS to port
 853, does not bother to authenticate, and sends the query. This step offers no
 authentication.</t>
     </list>
@@ -137,15 +137,14 @@ authentication.</t>
     TLS authentication it has to choose an authoritative name server
     among a NS RRset.
 </t>
-    <t>At the time of this document, it is expected that very few
-    resolvers will use the strict mode, because there is not yet a
-    deployment in authoritative name servers.</t>
+   <t>As of this revision, we do not expect resolvers to use strict mode, since the encryption and
+ authentication modes described in this document are not yet supported in authoritative name servers.</t>
     </section>
 
    <section title="Operational considerations">
       <t>DNS-over-TLS depends on TCP, and the resolver and the
       authoritative name server must therefore have persistent TCP
-      connections (<xref target="RFC7766"/>).</t>
+      connections (<xref target="RFC7766"/>, specially section 6.2.1).</t>
       <t>A resolver may have a lot of client-side state, when managing hundreds of connections to remote
       authoritative servers (<xref target="tdns"/>).</t>
       <t>The latency when connecting to a authoritative name
@@ -155,21 +154,22 @@ authentication.</t>
       (<xref target="I-D.ietf-tls-tls13"/>)</t>
       <t>Because the resolver cannot know in advance if the TLS
       connection will work (even if there is a DANE record), using
-      parallel attemps ("happy eyeballs", <xref target="RFC8305"/>) is
+      parallel attempts ("happy eyeballs", <xref target="RFC8305"/>) is
       important. A resolver working in opportunistic mode should try
-      port 53 and 853 in parallel.</t>
+      ports 53 and 853 in parallel.</t>
       <t>An authoritative name server cannot know if the resolver
-      authenticated it, and how. In the future, it may be interesting
-      to have a EDNS option to signal a successful authentication, or
+      authenticated it, nor how. In the future, it may be interesting
+      to have an EDNS option to signal a successful authentication, or
       a failure, but this is out of scope currently.</t>
       <t>If it is a concern that the same authoritative name servers
       are used for ordinary DNS and for encrypted DNS, there are
-      several solutions. We may use front-end systems dispatching
-      requests to port 53 and 853 to different servers.</t>
-      <t>A resolver must be configurable in mode strict or
-      opportunistic (the strict mode is very unrealistic at this time
-      and should not be the default). It may have a configuration to
-      be in strict mode only for some domains.</t>
+      several ways to address this concern. A server operator may use front-end systems dispatching
+      requests to ports 53 and 853 to different servers.</t>
+      <t>A resolver must be configurable to operate in strict or
+      opportunistic modes.  Until the features described herein are
+      widely supported, opportunistic mode should not be the default
+      since strict mode would yield frequent failures. A resolver may have a
+      configuration mechanism to be in strict mode only for some domains.</t>
   </section>
     
   <section title="IANA Considerations">
@@ -178,16 +178,17 @@ authentication.</t>
 
   <section anchor="security" title="Security Considerations">
      <t>The state to be kept in both the client and the server may
-     make some denial-of-service attacks easier. Following the advices
-     of section 10 of <xref target="RFC7766"/> is recommended.</t>
+     make some denial-of-service attacks easier. Following the advice contained
+     in section 10 of <xref target="RFC7766"/> is recommended.</t>
      <t>In opportunistic mode, there is no guarantee to have a secure
      use of the DNS, or even a guarantee to be informed of a
      problem. Opportunistic mode is a "best effort" privacy
      service. Even in strict mode, some leaks may occur, through the
      DANE meta-queries, and through SNI indication in the TLS
      session.</t>
-     <t>Encryption does not protect against a rogue server that will
-     capture you requests and use them for evil purposes. It must
+     <t>Neither transport encryption nor authentication protect DNS
+     users from authentic servers which nonetheless
+     abuse users’ privacy once they’ve received their queries. These techniques must
      therefore be combined with data minimization techniques (<xref
      target="RFC7816"/>).</t>
 </section>
@@ -231,12 +232,11 @@ authentication.</t>
 </references> 
 
 <section title="Acknowledgments">
-   <t>TODO</t>
+   <t>Thanks to Bill Woodcock for a detaile review.</t>
 </section>
 
 <section title="Alternatives">
-  <t>A comprehensive (?) list of other possible designs for this
-  problem is in <xref target="I-D.bortzmeyer-dprive-step-2"/>.</t>
+  <t>A number of other possible solutions to this problem may be found in in <xref target="I-D.bortzmeyer-dprive-step-2"/>.</t>
 </section>
 
 </back>
