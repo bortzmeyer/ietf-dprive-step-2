@@ -1,0 +1,55 @@
+\documentclass[ignorenonframetext]{beamer}
+\usetheme{Madrid}
+\usepackage[utf8x]{inputenc}
+\usepackage{bortzmeyer-utils}
+
+\title{Resolver to authoritative}
+\author{Stéphane Bortzmeyer - AFNIC}
+\date{IETF 101 - London}
+
+\begin{document}
+
+\begin{frame}
+\maketitle  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Proposal}
+  \begin{itemize}
+  \item<2->DNS-over-(D)TLS
+  \item<3->Authentication with DANE
+  \item<4->\path{draft-bortzmeyer-dprive-resolver-to-auth}  
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Open questions}
+  \begin{itemize}
+  \item<2->Try TLS before looking up DANE: because port 853 may be
+    blocked, and because we may use the TLS chain extension.
+  \item<3->Happy eyeballs: 53 and 853 at the same time.  
+  \item<4->Is it really sensible to mention strict mode? It is
+    unrealistic today.
+  \item<5->Mandating TLS 1.3?  
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Rechartering}
+  \begin{itemize}
+  \item<2->Charter said ``primary focus [\ldots] to develop mechanisms that
+    provide confidentiality between DNS Clients and Iterative Resolvers''
+  \item<3->Charter also says ``may also later consider mechanisms that provide confidentiality
+between Iterative Resolvers and Authoritative Server''
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Tasks}
+  \begin{itemize}
+  \item<2->Too little activity until now. Is there still interest?
+  \item<3->Update the charter?
+  \end{itemize}
+\end{frame}
+
+\end{document}
