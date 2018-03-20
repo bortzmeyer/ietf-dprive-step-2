@@ -25,7 +25,7 @@
 <!ENTITY I-D.ietf-tls-sni-encryption SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-sni-encryption.xml">
 ]>
-<rfc docName="draft-bortzmeyer-dprive-resolver-to-auth-01-BETA"
+<rfc docName="draft-bortzmeyer-dprive-resolver-to-auth-01"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -36,7 +36,7 @@ authentication of the DNS resolver-to-authoritative communication</title>
 <organization>AFNIC</organization>
 <address><postal><street>1, rue Stephenson</street><code>78180</code><city>Montigny-le-Bretonneux</city><country>France</country></postal> <phone>+33 1 39 30 83 46</phone><email>bortzmeyer+ietf@nic.fr</email><uri>http://www.afnic.fr/</uri></address>
 </author>
-<date day="TODO" month="TODO" year="2018"/>
+<date day="20" month="March" year="2018"/>
 <workgroup>DNS Privacy (dprive) Working Group</workgroup>
 <abstract>
   <t>This document proposes a mechanism for securing (privacy-wise)
