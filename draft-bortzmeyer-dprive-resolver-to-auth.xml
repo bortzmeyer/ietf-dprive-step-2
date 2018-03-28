@@ -25,7 +25,7 @@
 <!ENTITY I-D.ietf-tls-sni-encryption SYSTEM
 "http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-tls-sni-encryption.xml">
 ]>
-<rfc docName="draft-bortzmeyer-dprive-resolver-to-auth-01"
+<rfc docName="draft-bortzmeyer-dprive-resolver-to-auth-01-BETA"
      category="std" ipr="trust200902">
 <?rfc toc="yes"?>
 <?rfc strict="yes"?>
@@ -169,7 +169,7 @@ authentication.</t>
       requests to ports 53 and 853 to different servers.</t>
       <t>A resolver must be configurable to operate in strict or
       opportunistic modes.  Until the features described herein are
-      widely supported, opportunistic mode should not be the default
+      widely supported, opportunistic mode should be the default
       since strict mode would yield frequent failures. A resolver may have a
       configuration mechanism to be in strict mode only for some domains.</t>
   </section>
